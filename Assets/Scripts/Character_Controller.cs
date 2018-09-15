@@ -36,60 +36,11 @@ public class Character_Controller : MonoBehaviour {
         //printVelocity();
          playerMovement();
 
-        //holdMovement();
-
-
-
     }
 
     private void printVelocity()
     {
         print("current velocity: "+ rb.velocity);
-    }
-
-    private void holdMovement()
-    {
-        //resets target point on each frame
-        if (trans.position != GameObject.FindGameObjectWithTag("Respawn").transform.position)
-        {
-            targetPoint = Vector3.zero;
-        }
-        else
-        {
-            targetPoint = GameObject.FindGameObjectWithTag("Respawn").transform.position;
-        }
-        //new end point is only saved if mouse is clicked
-        while (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray;
-
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
-            {
-                endpoint = hit.point;
-            }
-
-            //sets target point to equals mouse click location
-            targetPoint += endpoint;
-            //calculate vector to travel along using current position and target position
-            Vector3 towards = targetPoint - trans.position;
-
-            //rotates player to look at target location
-            Quaternion targetRotation = Quaternion.LookRotation(towards);
-            trans.rotation = Quaternion.Lerp(trans.rotation, targetRotation, turnSpeed * Time.deltaTime);
-
-                // Normalize vector to get just the direction
-                towards.Normalize();
-                towards *= maxSpeed;
-
-                // Move character
-                rb.velocity = towards;
-        }
-        
-            //sets player velocity to zero if within radius of satisfaction
-            rb.velocity = Vector3.zero;
     }
 
     private void playerMovement()
