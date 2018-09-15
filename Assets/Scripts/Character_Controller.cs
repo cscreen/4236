@@ -2,81 +2,155 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using System;
 
 public class Character_Controller : MonoBehaviour {
-	[HideInInspector] public GameObject controller;
-	[HideInInspector] public GlobalVars target;
-	[HideInInspector] public float speed = 13.0F;
-	public float jumpVelocity = 550.0f;
-	public float maxSlope = 60;
-	private bool grounded = false;
-	Rigidbody rb;
+    [SerializeField] private Transform trans;
+    [SerializeField] private Rigidbody rb;
 
-	void Start () {
-		//Turns off cursor on screen and locks inside game window
-		Cursor.lockState = CursorLockMode.Locked;
-		rb = gameObject.GetComponent<Rigidbody> ();
-		controller = GameObject.Find ("GameController");
-		target = controller.GetComponent<GlobalVars> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		// Movement
-		float translation = Input.GetAxis ("Vertical") * speed;
-		float straffe = Input.GetAxis ("Horizontal") * speed;
-		translation *= Time.deltaTime;
-		straffe *= Time.deltaTime;
-		transform.Translate (straffe, 0, translation);
+    //max speed of character
+    private float maxSpeed;
+    //radius where character has reached target
+    private float radiusOfSat;
+    //speed that the player turns
+    private float turnSpeed;
+    //the point that the player should be heading to
+    private Vector3 targetPoint;
 
-		if (Input.GetButtonDown ("Jump") && grounded) {
-			rb.AddForce (0, jumpVelocity, 0);
-		}
+    //variable to save postion of mouse click
+    private Vector3 endpoint;
+
+    // Use this for initialization
+    void Start()
+    {
+        maxSpeed = 8f;
+        radiusOfSat = 1f;
+        turnSpeed = 5f;
+        targetPoint = Vector3.zero;
+        trans.position = GameObject.FindGameObjectWithTag("Respawn").transform.position;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //printVelocity();
+         playerMovement();
+
+        //holdMovement();
 
 
-	}
-	// Death
-	void OnCollisionEnter(Collision collision){
-		if (collision.transform.tag == "Restart") {
-			int scene = SceneManager.GetActiveScene().buildIndex;
-			SceneManager.LoadScene(scene, LoadSceneMode.Single);
-		}
 
-		// Finish Level
-		if (collision.transform.tag == "Finish" && target.targetCount == 0) {
-			StartCoroutine (ExecuteAfterTime (1));
-		}
-	}
-	 //Detect if you on the ground to jump
-	 void OnCollisionStay (Collision collision){
-		foreach (ContactPoint contact in collision.contacts){
+    }
 
-			if (Vector3.Angle(contact.normal, Vector3.up) < maxSlope){
-				print ("Can Jump");
-				grounded = true;
-				speed = 13.0f;
-			}
-		}
-	}
+    private void printVelocity()
+    {
+        print("current velocity: "+ rb.velocity);
+    }
 
-	void OnCollisionExit (Collision collision){
-		print("Can't Jump");
-		grounded = false;
-		speed = 15.0f;
-	}
+    private void holdMovement()
+    {
+        //resets target point on each frame
+        if (trans.position != GameObject.FindGameObjectWithTag("Respawn").transform.position)
+        {
+            targetPoint = Vector3.zero;
+        }
+        else
+        {
+            targetPoint = GameObject.FindGameObjectWithTag("Respawn").transform.position;
+        }
+        //new end point is only saved if mouse is clicked
+        while (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray;
 
-	IEnumerator ExecuteAfterTime(float time){
-		yield return new WaitForSeconds (time);
-		int scene = SceneManager.GetActiveScene ().buildIndex;
-		print (SceneManager.GetActiveScene ());
-		if (scene < 2) {
-			scene += 1;
-		} else {
-			scene = 0;
-			Cursor.lockState = CursorLockMode.None;
-			SceneManager.LoadScene(scene, LoadSceneMode.Single); // Retrun main menu on last level
-		}
-		SceneManager.LoadScene(scene, LoadSceneMode.Single); // Move to next level unless on last level
-	}
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
+            {
+                endpoint = hit.point;
+            }
+
+            //sets target point to equals mouse click location
+            targetPoint += endpoint;
+            //calculate vector to travel along using current position and target position
+            Vector3 towards = targetPoint - trans.position;
+
+            //rotates player to look at target location
+            Quaternion targetRotation = Quaternion.LookRotation(towards);
+            trans.rotation = Quaternion.Lerp(trans.rotation, targetRotation, turnSpeed * Time.deltaTime);
+
+                // Normalize vector to get just the direction
+                towards.Normalize();
+                towards *= maxSpeed;
+
+                // Move character
+                rb.velocity = towards;
+        }
+        
+            //sets player velocity to zero if within radius of satisfaction
+            rb.velocity = Vector3.zero;
+    }
+
+    private void playerMovement()
+    {
+        //resets target point on each frame
+        if (trans.position != GameObject.FindGameObjectWithTag("Respawn").transform.position)
+        {
+            targetPoint = Vector3.zero;
+        } else
+        {
+            targetPoint = GameObject.FindGameObjectWithTag("Respawn").transform.position;
+        }
+        //new end point is only saved if mouse is clicked
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray;
+
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
+            {
+                endpoint = hit.point;
+            }
+        }
+        //sets target point to equals mouse click location
+        targetPoint += endpoint;
+        //calculate vector to travel along using current position and target position
+        Vector3 towards = targetPoint - trans.position;
+
+        //rotates player to look at target location
+        Quaternion targetRotation = Quaternion.LookRotation(towards);
+        trans.rotation = Quaternion.Lerp(trans.rotation, targetRotation, turnSpeed * Time.deltaTime);
+
+
+        // If we haven't reached the target yet
+        if (towards.magnitude > radiusOfSat)
+        {
+
+            // Normalize vector to get just the direction
+            towards.Normalize();
+            towards *= maxSpeed;
+
+            // Move character
+            rb.velocity = towards;
+        }
+        else
+        {
+            //sets player velocity to zero if within radius of satisfaction
+            rb.velocity = Vector3.zero;
+        }
+    }
+
+    public void OnCollisionEnter(Collision col)
+    {
+        //stops player from moving when colliding with a wall
+        if (col.gameObject.tag == "Wall")
+        {
+            print("wall");
+            rb.velocity = Vector3.zero;
+        }
+    }
 }
+
