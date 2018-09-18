@@ -24,10 +24,10 @@ public class Character_Controller : MonoBehaviour {
     void Start()
     {
         maxSpeed = 8f;
-        radiusOfSat = 1f;
+        radiusOfSat = 2.5f;
         turnSpeed = 5f;
         targetPoint = Vector3.zero;
-        trans.position = GameObject.FindGameObjectWithTag("Respawn").transform.position;
+        trans.position = GameObject.FindGameObjectWithTag("PlayerStart").transform.position;
     }
 
     // Update is called once per frame
@@ -38,6 +38,7 @@ public class Character_Controller : MonoBehaviour {
 
     }
 
+    //debugging only
     private void printVelocity()
     {
         print("current velocity: "+ rb.velocity);
@@ -46,12 +47,12 @@ public class Character_Controller : MonoBehaviour {
     private void playerMovement()
     {
         //resets target point on each frame
-        if (trans.position != GameObject.FindGameObjectWithTag("Respawn").transform.position)
+        if (trans.position != GameObject.FindGameObjectWithTag("PlayerStart").transform.position)
         {
             targetPoint = Vector3.zero;
         } else
         {
-            targetPoint = GameObject.FindGameObjectWithTag("Respawn").transform.position;
+            targetPoint = GameObject.FindGameObjectWithTag("PlayerStart").transform.position;
         }
         //new end point is only saved if mouse is clicked
         if (Input.GetMouseButtonDown(0))
@@ -87,11 +88,6 @@ public class Character_Controller : MonoBehaviour {
             // Move character
             rb.velocity = towards;
         }
-        else
-        {
-            //sets player velocity to zero if within radius of satisfaction
-            rb.velocity = Vector3.zero;
-        }
     }
 
     public void OnCollisionEnter(Collision col)
@@ -99,7 +95,8 @@ public class Character_Controller : MonoBehaviour {
         //stops player from moving when colliding with a wall
         if (col.gameObject.tag == "Wall")
         {
-            print("wall");
+            //debugging only
+            //print("wall");
             rb.velocity = Vector3.zero;
         }
     }

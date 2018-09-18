@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - PlayerStart
+  - BossStart
+  - Boss
+  - Minon
   layers:
   - Default
   - TransparentFX
