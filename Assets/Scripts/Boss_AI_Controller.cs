@@ -7,6 +7,8 @@ public class Boss_AI_Controller : MonoBehaviour {
     [SerializeField] private Transform bossTrans;
     [SerializeField] private Rigidbody bossRb;
 
+    Animator anim;
+
     //transform of the player
     private Transform playerTrans;
     
@@ -15,6 +17,7 @@ public class Boss_AI_Controller : MonoBehaviour {
     void Start () {
         bossTrans.position = GameObject.FindGameObjectWithTag("BossStart").transform.position;
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
+        anim = GetComponent<Animator>();
     }
 	
 	// Update is called once per frame

@@ -8,6 +8,8 @@ public class Character_Controller : MonoBehaviour {
     [SerializeField] private Transform trans;
     [SerializeField] private Rigidbody rb;
 
+    //variable for animator controller
+    Animator anim;
     //max speed of character
     private float maxSpeed;
     //radius where character has reached target
@@ -23,11 +25,13 @@ public class Character_Controller : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        anim = GetComponent<Animator>();
         maxSpeed = 8f;
         radiusOfSat = 2.5f;
         turnSpeed = 5f;
         targetPoint = Vector3.zero;
         trans.position = GameObject.FindGameObjectWithTag("PlayerStart").transform.position;
+        endpoint = trans.position;
     }
 
     // Update is called once per frame
@@ -72,21 +76,22 @@ public class Character_Controller : MonoBehaviour {
         //calculate vector to travel along using current position and target position
         Vector3 towards = targetPoint - trans.position;
 
-        //rotates player to look at target location
-        Quaternion targetRotation = Quaternion.LookRotation(towards);
-        trans.rotation = Quaternion.Lerp(trans.rotation, targetRotation, turnSpeed * Time.deltaTime);
-
-
         // If we haven't reached the target yet
         if (towards.magnitude > radiusOfSat)
         {
-
+            anim.SetFloat("Speed", towards.magnitude);
             // Normalize vector to get just the direction
             towards.Normalize();
             towards *= maxSpeed;
 
             // Move character
             rb.velocity = towards;
+            //rotates player to look at target location
+            Quaternion targetRotation = Quaternion.LookRotation(towards);
+            trans.rotation = Quaternion.Lerp(trans.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        } else
+        {
+            anim.SetFloat("Speed", 0f);
         }
     }
 
@@ -96,8 +101,14 @@ public class Character_Controller : MonoBehaviour {
         if (col.gameObject.tag == "Wall")
         {
             //debugging only
-            //print("wall");
+            print("wall");
+            
             rb.velocity = Vector3.zero;
+            anim.SetFloat("Speed", 0f);
+            anim.Play("Sword and Shield Idle");
+            endpoint = trans.position;
+            targetPoint = Vector3.zero;
+            printVelocity();
         }
     }
 }
