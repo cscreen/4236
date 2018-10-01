@@ -15,7 +15,6 @@ public class Boss_AI_Controller : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        bossTrans.position = GameObject.FindGameObjectWithTag("BossStart").transform.position;
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
         anim = GetComponent<Animator>();
     }

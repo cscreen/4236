@@ -30,7 +30,6 @@ public class Character_Controller : MonoBehaviour {
         radiusOfSat = 2.5f;
         turnSpeed = 5f;
         targetPoint = Vector3.zero;
-        trans.position = GameObject.FindGameObjectWithTag("PlayerStart").transform.position;
         endpoint = trans.position;
     }
 
@@ -38,8 +37,37 @@ public class Character_Controller : MonoBehaviour {
     void Update()
     {
         //printVelocity();
-         playerMovement();
+        playerMovement();
+        playerCombat();
 
+
+    }
+
+    //method for player combat
+    private void playerCombat()
+    {
+        //pressing space initiates attack
+        if (Input.GetKeyDown("space"))
+        {
+            anim.SetBool("Attack", true);
+        }
+
+        if (Input.GetKeyUp("space"))
+        {
+            anim.SetBool("Attack", false);
+        }
+
+        //press and hold left shift to block
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            anim.SetFloat("Speed", 0f);
+            anim.SetBool("Block", true);
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            anim.SetBool("Block", false);
+        }
     }
 
     //debugging only
@@ -51,13 +79,8 @@ public class Character_Controller : MonoBehaviour {
     private void playerMovement()
     {
         //resets target point on each frame
-        if (trans.position != GameObject.FindGameObjectWithTag("PlayerStart").transform.position)
-        {
-            targetPoint = Vector3.zero;
-        } else
-        {
-            targetPoint = GameObject.FindGameObjectWithTag("PlayerStart").transform.position;
-        }
+        targetPoint = Vector3.zero;
+
         //new end point is only saved if mouse is clicked
         if (Input.GetMouseButtonDown(0))
         {
