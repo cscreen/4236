@@ -70,7 +70,7 @@
     <Compile Include="Assets\Scripts\Block_Script.cs" />
     <Compile Include="Assets\Scripts\Boss_AI_Controller.cs" />
     <Compile Include="Assets\Scripts\Character_Controller.cs" />
-    <Compile Include="Assets\Scripts\Grunt_Sound.cs" />
+    <Compile Include="Assets\Scripts\Sound_Script.cs" />
     <None Include="Assets\ProCore\ProBuilder\Shader\pb_TransparentOverlay.shader" />
     <None Include="Assets\ProCore\ProBuilder\API Examples\Icosphere FFT\README.txt" />
     <None Include="Assets\ProCore\ProBuilder\Shader\pb_SelectionPicker.shader" />
@@ -351,6 +351,12 @@
     <Reference Include="Boo.Lang">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/unity/Boo.Lang.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{76466479-638E-AF6A-6234-1DAAE4F042D6}</Project>
+      <Name>Assembly-CSharp-firstpass</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
