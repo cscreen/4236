@@ -27,6 +27,7 @@ public class Boss_AI_Controller : MonoBehaviour {
     private Vector3 start;
 
     private Vector3 waypoint;
+    private bool atStart;
 
 
 
@@ -37,9 +38,11 @@ public class Boss_AI_Controller : MonoBehaviour {
         radiusOfSat = 2.5f;
         turnSpeed = 5f;
         targetPoint = Vector3.zero;
-        endpoint = Vector3.zero;
         start = bossTrans.position;
-        waypoint = GameObject.FindGameObjectWithTag("Boss Waypoint").transform.position;
+        waypoint = new Vector3(-42.53f, 0.0f, -51.97f);
+        endpoint = waypoint;
+        atStart = false;
+        
     }
 	
 	// Update is called once per frame
@@ -50,9 +53,8 @@ public class Boss_AI_Controller : MonoBehaviour {
     private void movement()
     {
         //resets target point on each frame
+        
         targetPoint = Vector3.zero;
-
-        endpoint = waypoint;
 
         //sets target point to equals mouse click location
         targetPoint += endpoint;
@@ -62,6 +64,7 @@ public class Boss_AI_Controller : MonoBehaviour {
         // If we haven't reached the target yet
         if (towards.magnitude > radiusOfSat)
         {
+            
             anim.SetFloat("Speed", towards.magnitude);
             // Normalize vector to get just the direction
             towards.Normalize();
@@ -74,9 +77,19 @@ public class Boss_AI_Controller : MonoBehaviour {
             bossTrans.rotation = Quaternion.Lerp(bossTrans.rotation, targetRotation, turnSpeed * Time.deltaTime);
         }
         else
-        {
+        { 
             anim.SetFloat("Speed", 0f);
+            if (atStart)
+            {
+                endpoint = waypoint;
+            } else
+            {
+                endpoint = start;
+            }
+
+            atStart = !atStart;
         }
+
     }
 
     public void OnCollisionEnter(Collision col)
