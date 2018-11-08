@@ -6,9 +6,9 @@ TagManager:
   tags:
   - Wall
   - PlayerStart
-  - BossStart
   - Boss
   - Minon
+  - Boss Waypoint
   layers:
   - Default
   - TransparentFX
