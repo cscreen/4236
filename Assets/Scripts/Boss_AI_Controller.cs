@@ -101,5 +101,10 @@ public class Boss_AI_Controller : MonoBehaviour {
             //print("wall");
             bossRb.velocity = Vector3.zero;
         }
+
+        if(col.gameObject.tag == "Player")
+        {
+            anim.SetTrigger("Collision");
+        }
     }
 }
