@@ -22,6 +22,9 @@ public class Character_Controller : MonoBehaviour {
     //variable to save postion of mouse click
     private Vector3 endpoint;
 
+    PlayerHealth health;
+
+
     // Use this for initialization
     void Start()
     {
@@ -31,6 +34,7 @@ public class Character_Controller : MonoBehaviour {
         turnSpeed = 5f;
         targetPoint = Vector3.zero;
         endpoint = trans.position;
+        health = GetComponent<PlayerHealth>();
     }
 
     // Update is called once per frame
@@ -39,6 +43,13 @@ public class Character_Controller : MonoBehaviour {
         //printVelocity();
         playerMovement();
         playerCombat();
+
+        /* used for testing of health bar only
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            print("key down");
+            health.TakeDamage(10);
+        }*/
 
 
     }
