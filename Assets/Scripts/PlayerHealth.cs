@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class PlayerHealth : MonoBehaviour
     public AudioClip deathClip;                                 // The audio clip to play when the player dies.
     public float flashSpeed = 5f;                               // The speed the damageImage will fade at.
     public Color flashColour = new Color(1f, 0f, 0f, 0.1f);     // The colour the damageImage is set to, to flash.
+    public Animation DeathAnim;
 
 
     Animator anim;                                              // Reference to the Animator component.
@@ -72,19 +74,29 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0 && !isDead)
         {
             // ... it should die.
-            //Death();
-            print("player is dead");
+            StartCoroutine(Death());
+
+
         }
     }
 
-
-   /* void Death()
+    public bool isAlive()
     {
+        return !isDead;
+    }
+
+
+   private IEnumerator Death()
+    {
+        //print("player is dead");
         // Set the death flag so this function won't be called again.
         isDead = true;
 
+        Collider col = gameObject.GetComponent<Collider>();
+        col.enabled = !col.enabled;
+
         // Turn off any remaining shooting effects.
-        playerShooting.DisableEffects();
+        //playerShooting.DisableEffects();
 
         // Tell the animator that the player is dead.
         anim.SetTrigger("Die");
@@ -93,8 +105,13 @@ public class PlayerHealth : MonoBehaviour
         playerAudio.clip = deathClip;
         playerAudio.Play();
 
+        yield return new WaitForSeconds(70f);
+
+
         // Turn off the movement and shooting scripts.
-        playerMovement.enabled = false;
-        playerShooting.enabled = false;
-    }*/
+        // playerMovement.enabled = false;
+        // playerShooting.enabled = false;
+    }
+
+  
 }

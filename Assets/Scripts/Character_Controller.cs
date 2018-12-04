@@ -44,12 +44,18 @@ public class Character_Controller : MonoBehaviour {
         playerMovement();
         playerCombat();
 
-        /* used for testing of health bar only
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        ///* used for testing of health bar only
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            print("key down");
-            health.TakeDamage(10);
-        }*/
+           // print("key down");
+            health.TakeDamage(100);
+        }//*/
 
 
     }
@@ -132,10 +138,10 @@ public class Character_Controller : MonoBehaviour {
     public void OnCollisionEnter(Collision col)
     {
         //stops player from moving when colliding with a wall
-        if (col.gameObject.tag == "Wall")
+        if (health.isAlive() && col.gameObject.tag == "Wall")
         {
             //debugging only
-            print("wall");
+            //print("wall");
             
             rb.velocity = Vector3.zero;
             anim.SetFloat("Speed", 0f);
