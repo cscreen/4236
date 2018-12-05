@@ -43,7 +43,7 @@ public class Character_Controller : MonoBehaviour {
         //printVelocity();
         playerMovement();
         playerCombat();
-
+        
         if (Input.GetKeyDown(KeyCode.R))
         {
 
@@ -59,6 +59,7 @@ public class Character_Controller : MonoBehaviour {
 
 
     }
+
 
     //method for player combat
     private void playerCombat()
