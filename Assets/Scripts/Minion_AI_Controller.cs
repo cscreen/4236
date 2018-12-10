@@ -57,6 +57,23 @@ public class Minion_AI_Controller : MonoBehaviour {
 
         targetPoint = Vector3.zero;
 
+        var heading = playerTrans.position - minionTrans.position;
+        int range = 10;
+        if(heading.sqrMagnitude < range * range)
+        {
+            endpoint = playerTrans.position;
+        } else
+        {
+            if (atStart)
+            {
+                endpoint = waypoint;
+            }
+            else
+            {
+                endpoint = start;
+            }
+        }
+
         //sets target point to equals mouse click location
         targetPoint += endpoint;
         //calculate vector to travel along using current position and target position

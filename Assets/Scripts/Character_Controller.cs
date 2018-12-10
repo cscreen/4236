@@ -86,6 +86,18 @@ public class Character_Controller : MonoBehaviour {
         {
             anim.SetBool("Block", false);
         }
+
+        //used for testing only
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            trans.position = new Vector3(-32f, 0f, -40f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            trans.position = new Vector3(-20f, 0f, -20f);
+        }
     }
 
     //debugging only

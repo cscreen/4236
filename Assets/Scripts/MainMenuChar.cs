@@ -40,6 +40,8 @@ public class MainMenuChar : MonoBehaviour {
         {
             anim.SetBool("Block", false);
         }
+
+        
     }
 
     private IEnumerator Attack()
